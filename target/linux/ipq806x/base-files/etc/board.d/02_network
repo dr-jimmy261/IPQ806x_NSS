@@ -80,6 +80,7 @@ tplink,ad7200)
 		"2:lan:1" "3:lan:2" "4:lan:3" "5:lan:4" "6@eth1" "1:wan" "0@eth0"
 	;;
 asus,onhub |\
+ruijie,rg-mtfi-m520|\
 tplink,onhub)
 	ucidef_set_interfaces_lan_wan "eth1" "eth0"
 	ucidef_add_switch "switch0" \
@@ -98,6 +99,14 @@ zyxel,nbg6817)
 	;;
 *)
 	echo "Unsupported hardware. Network interfaces not intialized"
+	;;
+esac
+
+case "$board" in
+ruijie,rg-mtfi-m520)
+	hw_mac_addr=$(mtd_get_mac_ascii PRODUCTINFO ethaddr)
+	ucidef_set_interface_macaddr "wan" "$hw_mac_addr"
+	ucidef_set_interface_macaddr "lan" "$(macaddr_add $hw_mac_addr 1)"
 	;;
 esac
 
